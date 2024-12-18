@@ -1,0 +1,521 @@
+﻿<Window x:Class="TrafficPoliceVehiclesDLL.VehiclesWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TrafficPoliceVehiclesDLL"
+        xmlns:conv="clr-namespace:TrafficPoliceVehiclesDLL"
+        mc:Ignorable="d"
+        Title="Список ТС" Height="589" Width="940" MinHeight="650" MinWidth="940" WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <conv:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <conv:IsAddableConverter x:Key="IsAddableConverter"/>
+    </Window.Resources>
+
+
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <!-- Панель инструментов -->
+            <RowDefinition Height="*"/>
+            <!-- Основное содержимое -->
+        </Grid.RowDefinitions>
+
+        <!-- Панель инструментов -->
+        <Grid Grid.Row="0" Background="LightGray" Height="40">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0">
+                <Button IsEnabled="{Binding IsAddOrEdit, Converter={StaticResource IsAddableConverter}}" Command="{Binding AddVehicleCommand}" ToolTip="Добавить ТС" Margin="5,0">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Width="29" Height="27" Source="/TrafficPoliceVehiclesDLL;component/plus.png"/>
+                    </StackPanel>
+                </Button>
+                <Button IsEnabled="{Binding IsEdit, Converter={StaticResource IsAddableConverter}}" Command="{Binding EditVehicleCommand}" ToolTip="Редактировать" Margin="5,0">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Width="29" Height="27" Source="/TrafficPoliceVehiclesDLL;component/pencil.png"/>
+                    </StackPanel>
+                </Button>
+                <Button IsEnabled="{Binding IsAddOrEdit, Converter={StaticResource IsAddableConverter}}" Command="{Binding DeleteCommand}" ToolTip="Удалить" Margin="5,0">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Width="29" Height="27" Source="/TrafficPoliceVehiclesDLL;component/minus.png" />
+                    </StackPanel>
+                </Button>
+                <Button Command="{Binding SaveCommand}" ToolTip="Сохранить" Margin="5,0">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Width="29" Height="27" Source="/TrafficPoliceVehiclesDLL;component/save.png" />
+                    </StackPanel>
+                </Button>
+                <Button Visibility="{Binding IsAddOrEdit, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=True}" Command="{Binding CancelCommand}" ToolTip="Отменить" Margin="5,0">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Width="29" Height="27" Source="/TrafficPoliceVehiclesDLL;component/red cross.png" />
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </Grid>
+
+
+
+        <TabControl Grid.Row="1" FontSize="15" SelectedIndex="{Binding SelectedTabIndex, Mode=TwoWay}">
+            <!-- Вкладка "Список ТС" -->
+            <TabItem Header="Список ТС">
+                <Grid>
+                    <DataGrid IsEnabled="{Binding IsAddOrEdit, Converter={StaticResource IsAddableConverter}}" SelectedItem="{Binding SelectedVehicle, Mode=TwoWay}" SelectionMode="Single" FontSize="15" x:Name="VehiclesDataGrid" ItemsSource="{Binding Vehicles}" 
+                          AutoGenerateColumns="False" Margin="0,82,0,0"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Top"
+                          IsReadOnly="True" Height="452" Width="908">
+                    </DataGrid>
+                    <TextBox VerticalAlignment="Top" 
+                         Height="33"
+                         Width="180"
+                         HorizontalAlignment="Left"
+                         AcceptsReturn="True"
+                         TextWrapping="Wrap" 
+                         FontSize="15"
+                         Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" Margin="0,44,0,0">
+                        <TextBox.Style>
+                            <Style TargetType="TextBox" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+                                <Style.Resources>
+                                    <VisualBrush x:Key="CueBannerBrush" AlignmentX="Left" AlignmentY="Top" Stretch="None">
+                                        <VisualBrush.Visual>
+                                            <Label FontSize="15" Content="Поиск по гос.номеру" Foreground="LightGray" VerticalAlignment="Top"/>
+                                        </VisualBrush.Visual>
+                                    </VisualBrush>
+                                </Style.Resources>
+                                <Style.Triggers>
+                                    <Trigger Property="Text" Value="{x:Static sys:String.Empty}">
+                                        <Setter Property="Background" Value="{StaticResource CueBannerBrush}" />
+                                    </Trigger>
+                                    <Trigger Property="Text" Value="{x:Null}">
+                                        <Setter Property="Background" Value="{StaticResource CueBannerBrush}" />
+                                    </Trigger>
+                                    <Trigger Property="IsKeyboardFocused" Value="True">
+                                        <Setter Property="Background" Value="White" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBox.Style>
+                    </TextBox>
+                    <TextBox Text="{Binding SelectedVehicleStateRegistrationNumber}" FontSize="15" IsReadOnly="True" HorizontalAlignment="Left" Margin="222,44,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="142" Height="33"/>
+                    <TextBlock TextAlignment="Left" Text="Номер гос. регистрации" HorizontalAlignment="Left" Margin="222,23,0,0" VerticalAlignment="Top" Width="142"/>
+                    <TextBox Text="{Binding SelectedVehicleOwnerName}" HorizontalScrollBarVisibility="Auto" IsReadOnly="True" FontSize="15" HorizontalAlignment="Left" Margin="384,44,0,0"  VerticalAlignment="Top" Width="263" Height="33"/>
+                    <TextBlock TextAlignment="Left" HorizontalAlignment="Left" Margin="384,23,0,0" VerticalAlignment="Top" Width="142"><Run Language="ru-ru" Text="ФИО владельца"/></TextBlock>
+                </Grid>
+            </TabItem>
+
+            <!-- Вкладка "Информация о ТС" -->
+            <TabItem Header="Информация о ТС">
+                <Grid>
+                    <StackPanel Margin="10" VerticalAlignment="Top" HorizontalAlignment="Left" Width="1000">
+                        <TextBlock Text="Информация о ТС" FontWeight="Bold" FontSize="18" Margin="0,0,0,10"/>
+
+                        <!-- Гос. номер и владелец -->
+                        <StackPanel Orientation="Horizontal" Margin="0,5">
+                            <TextBlock FontSize="15" Text="Гос. номер: " FontWeight="Bold"/>
+                            <TextBox MaxLength="12" IsReadOnly="{Binding IsAddOrEdit, Converter={StaticResource IsAddableConverter}}" FontSize="15"  Text="{Binding SelectedVehicle.StateRegistrationNumber}" MinWidth="130"/>
+                        </StackPanel>
+
+
+                        <!-- Марка, модель, дата выпуска, тип кузова -->
+                        <StackPanel Orientation="Horizontal" Margin="0,10">
+                            <StackPanel Orientation="Horizontal" Width="200">
+                                <TextBlock FontSize="15"  Text="Марка: " FontWeight="Bold"/>
+                                <ComboBox FontSize="15" 
+                                      ItemsSource="{Binding CarBrands, Mode=TwoWay}" 
+                                      DisplayMemberPath="Title" 
+                                      SelectedItem="{Binding SelectedBrand, Mode=TwoWay}" 
+                                      HorizontalAlignment="Left"
+                                      IsEnabled="{Binding IsAddOrEdit}"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Width="200">
+                                <TextBlock FontSize="15"  Text="Модель: " FontWeight="Bold"/>
+                                <ComboBox FontSize="15" 
+                                      ItemsSource="{Binding CarModels, Mode=TwoWay}" 
+                                      DisplayMemberPath="Title" 
+                                      SelectedItem="{Binding SelectedModel, Mode=TwoWay}" 
+                                      HorizontalAlignment="Left" 
+                                      IsEnabled="{Binding IsAddOrEdit}"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Width="250">
+                                <TextBlock FontSize="15"  Text="Цвет: " FontWeight="Bold"/>
+                                <ComboBox FontSize="15" Text="{Binding SelectedVehicle.ColorTitle, Mode=TwoWay}" 
+                                      ItemsSource="{Binding Colors}" 
+                                      DisplayMemberPath="Title" 
+                                      SelectedItem="{Binding SelectedColor, Mode=TwoWay}"
+                                      IsEnabled="{Binding IsAddOrEdit}">
+                                </ComboBox>
+
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Width="285">
+                                <TextBlock FontSize="15"  Text="Тип кузова: " FontWeight="Bold"/>
+                                <ComboBox FontSize="15" Text="{Binding SelectedVehicle.BodyModelTitle, Mode=TwoWay}" 
+                                      ItemsSource="{Binding BodyModels}" 
+                                      DisplayMemberPath="Title" 
+                                      SelectedItem="{Binding SelectedBodyModel, Mode=TwoWay}"
+                                      IsEnabled="{Binding IsAddOrEdit}">
+                                </ComboBox>
+
+                            </StackPanel>
+
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,10">
+                            <StackPanel Orientation="Horizontal" Width="331">
+                                <TextBlock FontSize="15"  Text="Дата выпуска ТС: " FontWeight="Bold"/>
+                                <DatePicker IsEnabled="{Binding IsAddOrEdit}" FontSize="15" SelectedDate="{Binding SelectedVehicle.DateOfRelease, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            </StackPanel>
+                        </StackPanel>
+                        <!-- Ориентация руля и полный привод -->
+                        <StackPanel Orientation="Horizontal" Margin="0,10">
+                            <!-- Ориентация руля -->
+                            <StackPanel Orientation="Horizontal" Width="228">
+                                <TextBlock FontSize="15" Text="Руль: " FontWeight="Bold" Margin="0,0,5,0"/>
+                                <ComboBox FontSize="15" 
+                                      SelectedItem="{Binding SteeringWheelOrientation}" 
+                                      VerticalAlignment="Top"
+                                      Width="152"
+                                      IsEnabled="{Binding IsAddOrEdit}">
+                                    <ComboBox.ItemsSource>
+                                        <x:Array Type="{x:Type sys:String}" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+                                            <sys:String>Левый</sys:String>
+                                            <sys:String>Правый</sys:String>
+                                        </x:Array>
+                                    </ComboBox.ItemsSource>
+                                </ComboBox>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Width="270">
+                                <TextBlock FontSize="15"  Text="Полный привод: " FontWeight="Bold"/>
+                                <CheckBox IsEnabled="{Binding IsAddOrEdit}" Height="15" IsChecked="{Binding SelectedVehicle.AWD, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <!-- Объем, мощность двигателя и налог -->
+                        <StackPanel Orientation="Horizontal" Margin="0,10">
+                            <StackPanel Orientation="Horizontal" Width="200">
+                                <TextBlock FontSize="15"  Text="Объем двигателя (л): " FontWeight="Bold"/>
+                                <TextBox MaxLength="4" IsReadOnly="{Binding IsAddOrEdit, Converter={StaticResource IsAddableConverter}}" FontSize="15"  Text="{Binding SelectedVehicle.EngineVolume}" MinWidth="36"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Width="250">
+                                <TextBlock FontSize="15"  Text="Мощность двигателя (л.с): " FontWeight="Bold"/>
+                                <TextBox MaxLength="7" IsReadOnly="{Binding IsAddOrEdit, Converter={StaticResource IsAddableConverter}}" FontSize="15"  Text="{Binding SelectedVehicle.EnginePower}" MinWidth="50"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Width="250">
+                                <TextBlock FontSize="15"  Text="Годовой налог (руб.): " FontWeight="Bold"/>
+                                <TextBox MaxLength="13" IsReadOnly="{Binding IsAddOrEdit, Converter={StaticResource IsAddableConverter}}" FontSize="15"  Text="{Binding SelectedVehicle.AnnualTax}" MinWidth="84"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <!-- VIN номер -->
+                        <StackPanel Orientation="Horizontal" Margin="0,10">
+                            <TextBlock FontSize="15"  Text="VIN номер: " FontWeight="Bold"/>
+                            <TextBox MaxLength="17" IsReadOnly="{Binding IsAddOrEdit, Converter={StaticResource IsAddableConverter}}" FontSize="15"  Text="{Binding SelectedVehicle.VIN}" MinWidth="209"/>
+                        </StackPanel>
+
+                        <!-- Номер двигателя -->
+                        <StackPanel Orientation="Horizontal" Margin="0,5">
+                            <TextBlock FontSize="15"  Text="Номер двигателя: " FontWeight="Bold"/>
+                            <TextBox MaxLength="14" IsReadOnly="{Binding IsAddOrEdit, Converter={StaticResource IsAddableConverter}}" FontSize="15"  Text="{Binding SelectedVehicle.EngineNumber}" MinWidth="185"/>
+                        </StackPanel>
+
+                        <!-- Номер кузова -->
+                        <StackPanel Orientation="Horizontal" Margin="0,5">
+                            <TextBlock FontSize="15"  Text="Номер кузова: " FontWeight="Bold"/>
+                            <TextBox MaxLength="14" IsReadOnly="{Binding IsAddOrEdit, Converter={StaticResource IsAddableConverter}}" FontSize="15"  Text="{Binding SelectedVehicle.CarBodyNumber}" MinWidth="206"/>
+                        </StackPanel>
+
+                        <!-- Номер шасси -->
+                        <StackPanel Orientation="Horizontal" Margin="0,5">
+                            <TextBlock FontSize="15"  Text="Номер шасси: " FontWeight="Bold"/>
+                            <TextBox MaxLength="47" IsReadOnly="{Binding IsAddOrEdit, Converter={StaticResource IsAddableConverter}}" FontSize="15"  Text="{Binding SelectedVehicle.ChassisNumber}" MinWidth="214"/>
+                        </StackPanel>
+
+                        <!-- Дата и номер тех.талона -->
+                        <StackPanel Orientation="Horizontal" Margin="0,10">
+                            <StackPanel Orientation="Horizontal" Width="375">
+                                <TextBlock FontSize="15"  Text="Дата выдачи тех.талона: " FontWeight="Bold"/>
+                                <DatePicker IsEnabled="{Binding IsAddOrEdit}" FontSize="15" SelectedDate="{Binding SelectedVehicle.TechnicalTicketDateOfRelease}" Width="143"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Width="377">
+                                <TextBlock FontSize="15"  Text="Номер тех.талона: " FontWeight="Bold"/>
+                                <TextBox MaxLength="15" IsReadOnly="{Binding IsAddOrEdit, Converter={StaticResource IsAddableConverter}}" FontSize="15" Text="{Binding SelectedVehicle.TechnicalTicketNumber}" MinWidth="180"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <!-- Дата регистрации -->
+                        <StackPanel Orientation="Horizontal" Margin="0,10">
+                            <StackPanel Orientation="Horizontal" Width="320">
+                                <TextBlock FontSize="15"  Text="Дата регистрации ТС: " FontWeight="Bold"/>
+                                <DatePicker IsEnabled="{Binding IsAddOrEdit}" FontSize="15"  SelectedDate="{Binding SelectedVehicle.DateOfRegistration}" Width="145"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Width="320"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+
+
+            <TabItem Header="Владелец" Height="26" Margin="-2,0,-2,0" VerticalAlignment="Bottom">
+                <Grid>
+                    <StackPanel Margin="10" VerticalAlignment="Top" HorizontalAlignment="Left" Width="880">
+                        <!-- Заголовок -->
+                        <TextBlock Text="Информация о владельце" 
+                               FontWeight="Bold" 
+                               FontSize="18" 
+                               Margin="0,0,0,10"/>
+
+                        <StackPanel>
+                            <TextBlock Text="Руководитель:" FontSize="15" FontWeight="Bold" Visibility="{Binding IsVisible, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=False}"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,5">
+                            <TextBlock FontSize="15" Text="Фамилия: " FontWeight="Bold"/>
+                            <TextBox IsReadOnly="{Binding IsAddOrEdit, Converter={StaticResource IsAddableConverter}}" FontSize="15"  Text="{Binding Owner.Surname}" MinWidth="117"/>
+                            <TextBlock FontSize="15" Text="Имя: " FontWeight="Bold"/>
+                            <TextBox IsReadOnly="{Binding IsAddOrEdit, Converter={StaticResource IsAddableConverter}}" FontSize="15"  Text="{Binding Owner.Name}" MinWidth="103"/>
+                            <TextBlock FontSize="15" Text="Отчество: " FontWeight="Bold"/>
+                            <TextBox IsReadOnly="{Binding IsAddOrEdit, Converter={StaticResource IsAddableConverter}}" FontSize="15"  Text="{Binding Owner.Patronymic}" MinWidth="114"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,5">
+                            <TextBlock FontSize="15"  Text="Тип отношения: " FontWeight="Bold"/>
+                            <ComboBox FontSize="15" 
+                              SelectedItem="{Binding LegalRelation}" 
+                              VerticalAlignment="Top" 
+                              Width="175"
+                                              IsEnabled="{Binding IsAddOrEdit}">
+                                <ComboBox.ItemsSource>
+                                    <x:Array Type="{x:Type sys:String}" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+                                        <sys:String>Юридическое лицо</sys:String>
+                                        <sys:String>Физическое лицо</sys:String>
+                                    </x:Array>
+                                </ComboBox.ItemsSource>
+                            </ComboBox>
+                            <StackPanel Orientation="Horizontal" Visibility="{Binding IsVisible, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=False}" Width="576">
+                                <TextBlock FontSize="15"  Text="Название организации: " FontWeight="Bold"/>
+                                <TextBox IsReadOnly="{Binding IsAddOrEdit, Converter={StaticResource IsAddableConverter}}" FontSize="15"  Text="{Binding Owner.OrganizationName}" MinWidth="148"/>
+                            </StackPanel>
+
+                        </StackPanel>
+
+
+                        <StackPanel Orientation="Horizontal" Margin="0,10">
+                            <StackPanel Orientation="Horizontal" Width="354">
+                                <TextBlock FontSize="15"  Text="Номер телефона: +7" FontWeight="Bold"/>
+                                <TextBox MaxLength="10" IsReadOnly="{Binding IsAddOrEdit, Converter={StaticResource IsAddableConverter}}" FontSize="15"  Text="{Binding Owner.PhoneNumber}" MinWidth="118"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <StackPanel Visibility="{Binding IsVisible, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=True}" Orientation="Horizontal" Margin="0,10">
+                            <StackPanel Orientation="Horizontal" Width="200">
+                                <TextBlock FontSize="15"  Text="Серия паспорта: " FontWeight="Bold"/>
+                                <TextBox MaxLength="4" IsReadOnly="{Binding IsAddOrEdit, Converter={StaticResource IsAddableConverter}}" FontSize="15"  Text="{Binding Owner.PassportSeries}" MinWidth="63"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Width="250">
+                                <TextBlock FontSize="15"  Text="Номер паспорта: " FontWeight="Bold"/>
+                                <TextBox MaxLength="6" IsReadOnly="{Binding IsAddOrEdit, Converter={StaticResource IsAddableConverter}}" FontSize="15"  Text="{Binding Owner.PassportNumber}" MinWidth="118"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Width="305">
+                                <TextBlock FontSize="15"  Text="Дата выдачи: " FontWeight="Bold"/>
+                                <DatePicker IsEnabled="{Binding IsAddOrEdit}" FontSize="15"  SelectedDate="{Binding Owner.PassportDateOfRelease, Mode=TwoWay}"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <StackPanel Visibility="{Binding IsVisible, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=True}" Orientation="Horizontal">
+                            <TextBlock FontSize="15"  Text="Выдан: " FontWeight="Bold"/>
+                            <TextBox IsReadOnly="{Binding IsAddOrEdit, Converter={StaticResource IsAddableConverter}}" FontSize="15"  Text="{Binding Owner.PassportReleaseOrganization}" MinWidth="815"/>
+                        </StackPanel>
+
+                        <!-- Номер двигателя -->
+                        <StackPanel Orientation="Horizontal" Margin="0 30 0 0">
+                            <TextBlock FontSize="15"  Text="Почтовый индекс: " FontWeight="Bold"/>
+                            <TextBox MaxLength="6" IsReadOnly="{Binding IsAddOrEdit, Converter={StaticResource IsAddableConverter}}" FontSize="15"  Text="{Binding Owner.PostalCode}" MinWidth="113"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0 10 0 0">
+                            <TextBlock FontSize="15"  Text="Город: " FontWeight="Bold"/>
+                            <TextBox IsReadOnly="{Binding IsAddOrEdit, Converter={StaticResource IsAddableConverter}}" FontSize="15"  Text="{Binding Owner.City}" MinWidth="147"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0 10 0 0">
+                            <TextBlock FontSize="15"  Text="Улица: " FontWeight="Bold"/>
+                            <TextBox IsReadOnly="True" FontSize="15"  Text="{Binding Owner.StreetTitle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MinWidth="75"/>
+                            <Button IsEnabled="{Binding IsAddOrEdit}" FontSize="15" Content="Выбрать" Command="{Binding OpenStreetLookupCommand}" Width="Auto"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0 10 0 0">
+                            <TextBlock FontSize="15"  Text="Дом: " FontWeight="Bold"/>
+                            <TextBox IsReadOnly="{Binding IsAddOrEdit, Converter={StaticResource IsAddableConverter}}" FontSize="15"  Text="{Binding Owner.HouseNumber}" MinWidth="68"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0 10 0 0">
+                            <TextBlock FontSize="15"  Text="Квартира/офис: " FontWeight="Bold"/>
+                            <TextBox IsReadOnly="{Binding IsAddOrEdit, Converter={StaticResource IsAddableConverter}}" FontSize="15"  Text="{Binding Owner.AppartmentNumber}" MinWidth="68"/>
+                        </StackPanel>
+                    </StackPanel>
+
+
+                </Grid>
+            </TabItem>
+
+
+            <TabItem Header="Сведения тех.осмотра">
+                <Grid>
+                    <StackPanel Margin="10" VerticalAlignment="Top" HorizontalAlignment="Left" Width="750">
+                        <!-- Заголовок -->
+                        <TextBlock Text="Информация о тех.осмотре" 
+           FontWeight="Bold" 
+           FontSize="18" 
+           Margin="0,0,0,10"/>
+
+                        <!-- Гос. номер и владелец -->
+                        <StackPanel Orientation="Horizontal" Margin="0,5">
+                            <TextBlock FontSize="15" Text="Гос. номер: " FontWeight="Bold"/>
+                            <TextBox IsReadOnly="{Binding IsAddOrEdit, Converter={StaticResource IsAddableConverter}}" FontSize="15"  Text="{Binding TechnicalInspection.StateRegistrationNumber}" MinWidth="130"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,5">
+                            <TextBlock FontSize="15"  Text="Дата прохождения ТО: " FontWeight="Bold"/>
+                            <DatePicker IsEnabled="{Binding IsAddOrEdit}" FontSize="15"  SelectedDate="{Binding TechnicalInspection.DateOfInspection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="137"/>
+                        </StackPanel>
+
+
+                        <StackPanel Orientation="Horizontal" Margin="0,10">
+                            <StackPanel Orientation="Horizontal" Width="544">
+                                <TextBlock FontSize="15"  Text="Инспектор, проводивший ТО: " FontWeight="Bold"/>
+                                <TextBox IsReadOnly="True" FontSize="15"  Text="{Binding TechnicalInspection.InspectorFullName}" MinWidth="120"/>
+                                <Button IsEnabled="{Binding IsAddOrEdit}" FontSize="15" Content="Выбрать" Command="{Binding OpenInspectorLookupCommand}" Width="Auto"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="0,10">
+                            <StackPanel Orientation="Horizontal" Width="345">
+                                <TextBlock FontSize="15"  Text="Пробег на дату ТО (км): " FontWeight="Bold"/>
+                                <TextBox IsReadOnly="{Binding IsAddOrEdit, Converter={StaticResource IsAddableConverter}}" FontSize="15"  Text="{Binding TechnicalInspection.Mileage}" MinWidth="132"/>
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,10">
+                            <StackPanel Orientation="Horizontal" Width="276">
+                                <TextBlock FontSize="15"  Text="Плата за ТО (руб.): " FontWeight="Bold"/>
+                                <TextBox MaxLength="13" IsReadOnly="{Binding IsAddOrEdit, Converter={StaticResource IsAddableConverter}}" FontSize="15"  Text="{Binding TechnicalInspection.InspectionPrice}" MinWidth="118"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="0,10">
+                            <StackPanel Orientation="Horizontal" Width="353">
+                                <TextBlock FontSize="15"  Text="Плата за знак ТО (руб.): " FontWeight="Bold"/>
+                                <TextBox MaxLength="13"  IsReadOnly="{Binding IsAddOrEdit, Converter={StaticResource IsAddableConverter}}" FontSize="15"  Text="{Binding TechnicalInspection.SignPrice}" MinWidth="115"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel Margin="30" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+                    <StackPanel Margin="30" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Водители">
+                <Grid>
+                    <StackPanel Margin="10,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" Width="898" Height="542">
+
+                        <!-- Заголовок -->
+                        <TextBlock Text="Учёт водителей" 
+                           FontWeight="Bold" 
+                           FontSize="18" 
+                           Margin="0,0,0,10"/>
+                        <StackPanel Orientation="Horizontal" Margin="0 5 0 5">
+                            <TextBlock FontSize="15"  Text="Владелец " FontWeight="Bold"/>
+                            <Button Content="Заполнить" IsEnabled="{Binding IsAddOrEdit}" Command="{Binding IsDriverOwner}" Width="78"/>
+                        </StackPanel>
+                        <TextBlock FontSize="15"  Text="Водители: " FontWeight="Bold"/>
+                        <StackPanel Width="800" Orientation="Horizontal">
+
+                            <DataGrid IsReadOnly="True" SelectedItem="{Binding Driver}" SelectionMode="Single" FontSize="15" x:Name="DriversDataGrid" ItemsSource="{Binding Drivers}" 
+                              AutoGenerateColumns="False"
+                              HorizontalAlignment="Left" Height="123" Width="Auto">
+                            </DataGrid>
+                            <StackPanel VerticalAlignment="Center">
+                                <Button IsEnabled="{Binding IsAddOrEdit}" Command="{Binding AddDriverCommand}" ToolTip="Добавить водителя" Margin="5,0" VerticalAlignment="Center">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Width="29" Height="27" Source="/view/plus.png"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <Button IsEnabled="{Binding IsAddOrEdit}" Command="{Binding RemoveDriverCommand}" ToolTip="Убрать водителя" Margin="5">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Width="29" Height="27" Source="/view/minus.png" />
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,5">
+                            <TextBlock FontSize="15" Text="Фамилия: " FontWeight="Bold"/>
+                            <TextBox IsReadOnly="{Binding IsAddOrEdit, Converter={StaticResource IsAddableConverter}}" FontSize="15"  Text="{Binding Driver.Surname}" MinWidth="117"/>
+                            <TextBlock FontSize="15" Text="Имя: " FontWeight="Bold"/>
+                            <TextBox IsReadOnly="{Binding IsAddOrEdit, Converter={StaticResource IsAddableConverter}}" FontSize="15"  Text="{Binding Driver.Name}" MinWidth="103"/>
+                            <TextBlock FontSize="15" Text="Отчество: " FontWeight="Bold"/>
+                            <TextBox IsReadOnly="{Binding IsAddOrEdit, Converter={StaticResource IsAddableConverter}}" FontSize="15"  Text="{Binding Driver.Patronymic}" MinWidth="114"/>
+                        </StackPanel>
+
+
+                        <StackPanel Orientation="Horizontal" Margin="0,10">
+                            <StackPanel Orientation="Horizontal" Width="270">
+                                <TextBlock FontSize="15"  Text="Номер телефона: +7" FontWeight="Bold"/>
+                                <TextBox MaxLength="10" IsReadOnly="{Binding IsAddOrEdit, Converter={StaticResource IsAddableConverter}}" FontSize="15"  Text="{Binding Driver.PhoneNumber}" Width="112"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="0,10">
+                            <StackPanel Orientation="Horizontal" Width="200">
+                                <TextBlock FontSize="15"  Text="Серия паспорта: " FontWeight="Bold"/>
+                                <TextBox MaxLength="4" IsReadOnly="{Binding IsAddOrEdit, Converter={StaticResource IsAddableConverter}}" FontSize="15"  Text="{Binding Driver.PassportSeries}" MinWidth="72"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Width="250">
+                                <TextBlock FontSize="15"  Text="Номер паспорта: " FontWeight="Bold"/>
+                                <TextBox MaxLength="6" IsReadOnly="{Binding IsAddOrEdit, Converter={StaticResource IsAddableConverter}}" FontSize="15"  Text="{Binding Driver.PassportNumber}" MinWidth="116"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Width="250">
+                                <TextBlock FontSize="15"  Text="Дата выдачи: " FontWeight="Bold"/>
+                                <DatePicker IsEnabled="{Binding IsAddOrEdit}" FontSize="15"  SelectedDate="{Binding Driver.PassportDateOfRelease}" Width="139"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock FontSize="15"  Text="Выдан: " FontWeight="Bold"/>
+                            <TextBox IsReadOnly="{Binding IsAddOrEdit, Converter={StaticResource IsAddableConverter}}" FontSize="15"  Text="{Binding Driver.PassportReleaseOrganization}" MinWidth="381"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="0,10">
+                            <StackPanel Orientation="Horizontal" Width="314">
+                                <TextBlock FontSize="15"  Text="Номер ВУ: " FontWeight="Bold"/>
+                                <TextBox MaxLength="10" IsReadOnly="{Binding IsAddOrEdit, Converter={StaticResource IsAddableConverter}}" FontSize="15"  Text="{Binding Driver. LicenseNumber}" MinWidth="197"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Width="349">
+                                <TextBlock FontSize="15"  Text="Дата выдачи ВУ: " FontWeight="Bold"/>
+                                <DatePicker IsEnabled="{Binding IsAddOrEdit}" FontSize="15"  SelectedDate="{Binding Driver.LicenseDateOfRelease}" Width="146"/>
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel>
+                            <TextBlock FontSize="15"  Text="Категории: " FontWeight="Bold"/>
+                            <StackPanel Orientation="Horizontal">
+                                <DataGrid IsReadOnly="True" SelectedItem="{Binding LicenseCategory, Mode=TwoWay}" SelectionMode="Single" FontSize="15" x:Name="CategoriesDataGrid" ItemsSource="{Binding LicenseCategories}" 
+                                      AutoGenerateColumns="False"
+                                      HorizontalAlignment="Left" Height="114" Width="Auto"
+                                      HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
+                                <StackPanel VerticalAlignment="Center">
+                                    <Button IsEnabled="{Binding IsAddOrEdit}" Command="{Binding AddLicenseCategoryCommand}" ToolTip="Добавить категорию" Margin="5,0" VerticalAlignment="Center">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Image Width="29" Height="27" Source="/view/plus.png"/>
+                                        </StackPanel>
+                                    </Button>
+
+                                    <Button IsEnabled="{Binding IsAddOrEdit}" Command="{Binding RemoveLicenseCategoryCommand}" ToolTip="Убрать категорию" Margin="5">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Image Width="29" Height="27" Source="/view/minus.png" />
+                                        </StackPanel>
+                                    </Button>
+                                </StackPanel>
+                            </StackPanel>
+
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+
+        </TabControl>
+
+    </Grid>
+</Window>

@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="keys.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TrafficPoliceAccidentsDLL\TrafficPoliceAccidentsDLL.csproj" />
+    <ProjectReference Include="..\TrafficPoliceAddUserDLL\TrafficPoliceAddUserDLL.csproj" />
+    <ProjectReference Include="..\TrafficPoliceChangePasswordDLL\TrafficPoliceChangePasswordDLL.csproj" />
+    <ProjectReference Include="..\TrafficPoliceDirectoryManagementDLL\TrafficPoliceDirectoryManagementDLL.csproj" />
+    <ProjectReference Include="..\TrafficPoliceDomainDLL\TrafficPoliceDomainDLL.csproj" />
+    <ProjectReference Include="..\TrafficPoliceLookupDLL\TrafficPoliceLookupDLL.csproj" />
+    <ProjectReference Include="..\TrafficPoliceQueryDLL\TrafficPoliceQueryDLL.csproj" />
+    <ProjectReference Include="..\TrafficPoliceUserAbilitiesDLL\TrafficPoliceUserAbilitiesDLL.csproj" />
+    <ProjectReference Include="..\TrafficPoliceVehiclesDLL\TrafficPoliceVehiclesDLL.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="keys.png" />
+  </ItemGroup>
+
+</Project>

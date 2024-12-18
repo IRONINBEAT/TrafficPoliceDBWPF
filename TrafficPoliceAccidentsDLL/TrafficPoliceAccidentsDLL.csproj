@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="minus.png" />
+    <None Remove="pencil.png" />
+    <None Remove="plus.png" />
+    <None Remove="red cross.png" />
+    <None Remove="save.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TrafficPoliceDomainDLL\TrafficPoliceDomainDLL.csproj" />
+    <ProjectReference Include="..\TrafficPoliceLookupDLL\TrafficPoliceLookupDLL.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="minus.png" />
+    <Resource Include="pencil.png" />
+    <Resource Include="plus.png" />
+    <Resource Include="red cross.png" />
+    <Resource Include="save.png" />
+  </ItemGroup>
+
+</Project>

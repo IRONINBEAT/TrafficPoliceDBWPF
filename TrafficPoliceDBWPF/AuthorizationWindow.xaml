@@ -1,0 +1,33 @@
+﻿<Window x:Class="TrafficPoliceDBWPF.AuthorizationWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TrafficPoliceDBWPF"
+        mc:Ignorable="d"
+        Title="Вход" MinHeight="390" MinWidth="470" Height="390" Width="470" WindowStartupLocation="CenterScreen">
+    <Grid Background="#FFB9D1EA">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="117*"/>
+            <RowDefinition Height="257*"/>
+        </Grid.RowDefinitions>
+        <TextBox FontSize="15" x:Name="loginField" HorizontalAlignment="Left" TextWrapping="Wrap" Text="{Binding UserName}" VerticalAlignment="Top" Width="238" Height="26" Margin="190,47,0,0" Grid.Row="1"/>
+        <Label FontSize="15" Content="Имя пользователя" HorizontalAlignment="Left" Margin="18,47,0,0" VerticalAlignment="Top" Grid.Row="1" Height="40" Width="137"/>
+        <Label FontSize="15" Content="Пароль" HorizontalAlignment="Left" Margin="18,92,0,0" VerticalAlignment="Top" Grid.Row="1" Height="35" Width="84"/>
+        <Button FontSize="15" Content="Вход" Command="{Binding Enter}" HorizontalAlignment="Left" Margin="61,155,0,0" VerticalAlignment="Top" Width="94" Height="30" Grid.Row="1"/>
+        <Button FontSize="15" Content="Отмена" HorizontalAlignment="Left" Margin="309,155,0,0" VerticalAlignment="Top" Width="94" Height="30" Grid.Row="1"/>
+        <Label FontSize="15" x:Name="CapsLockLabel" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Row="1" Height="36" Width="194"/>
+        <Label FontSize="15" x:Name="InputLanguageLabel" HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.Row="1" Height="36" Width="224" Margin="0,0,-45,0"/>
+        <PasswordBox PasswordChanged="PasswordBox_PasswordChanged" FontSize="15" HorizontalAlignment="Left" Margin="190,92,0,0" VerticalAlignment="Top" Width="238" Height="26" Grid.Row="1"/>
+        <StackPanel VerticalAlignment="Top" Height="33" Background="#FFFEFCB3">
+            <Label FontSize="15" Content="АИС ГАИ" HorizontalContentAlignment="Right" Height="32" VerticalAlignment="Top" HorizontalAlignment="Right" VerticalContentAlignment="Center" Background="{x:Null}"/>
+        </StackPanel>
+        <StackPanel VerticalAlignment="Top" Height="33" Background="#FFFBFF2D" Margin="0,38,0,0">
+            <Label Content="" HorizontalContentAlignment="Right" Height="32" VerticalAlignment="Top" HorizontalAlignment="Right" VerticalContentAlignment="Center" Background="{x:Null}"/>
+        </StackPanel>
+        <StackPanel Height="33" VerticalAlignment="Top" Background="White" Margin="0,76,0,0">
+            <Label FontSize="15" Content="Введите имя пользователя и пароль" HorizontalContentAlignment="Right" Height="32" VerticalAlignment="Top" HorizontalAlignment="Right" VerticalContentAlignment="Center"/>
+        </StackPanel>
+        <Image HorizontalAlignment="Left" Height="71" VerticalAlignment="Top" Width="75" Source="/keys.png"/>
+    </Grid>
+</Window>
